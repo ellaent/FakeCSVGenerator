@@ -109,7 +109,7 @@
                 }
             });
 
-            $("select").change( function(){
+            $(document).on('change','select', function(){
                 var id = $(this).attr('id').replace(/[^0-9\.]+/g, "");
                 var from = "id_column_set-" + id + "-from_range";
                 var to = "id_column_set-" + id + "-to_range";
