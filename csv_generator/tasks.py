@@ -84,17 +84,6 @@ def generate_fake_csv(self, dataset_id):
             raw_row.append(data)
         all_rows.append(raw_row)
 
-    # with open(
-    #     f"{settings.MEDIA_ROOT}schema_{schema.schema_id}dataset_{dataset_id}.csv", "w"
-    # ) as csvfile:
-    #     writer = csv.writer(
-    #         csvfile, delimiter=delimeter, quotechar='"', quoting=csv.QUOTE_ALL
-    #     )
-    #     writer.writerow(header)
-    #     writer.writerows(all_rows)
-    #
-    #     dataset.status = "Ready"
-    #     dataset.save()
     with default_storage.open(
         f"schema_{schema.schema_id}dataset_{dataset_id}.csv", "w"
     ) as csvfile:
