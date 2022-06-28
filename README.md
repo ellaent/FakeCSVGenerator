@@ -1,7 +1,7 @@
 # FakeCSVGenerator
 Django web-application for generating fake CSV data files
 
-#Deployment
+# Deployment
 https://csv-fake-creator.herokuapp.com/
 test user credentials:
 user: test
