@@ -26,4 +26,4 @@ urlpatterns = [
     path("", include("csv_generator.urls")),
     path("", include("celery_progress.urls")),
     path(r"^celery-progress/", include("celery_progress.urls")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
