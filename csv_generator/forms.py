@@ -73,13 +73,17 @@ class ColumnInlineFormSet(BaseInlineFormSet):
                         form.cleaned_data["from_range"]
                         and form.cleaned_data["to_range"]
                     ):
-                        if (
-                            form.cleaned_data["from_range"] < 0
-                            or form.cleaned_data["to_range"] < 0
-                            or form.cleaned_data["from_range"]
-                            >= form.cleaned_data["to_range"]
-                        ):
-                            raise forms.ValidationError("Incorrect column range.")
+                        if form.cleaned_data["type"] == 'Text':
+                            if (
+                                form.cleaned_data["from_range"] < 0
+                                or form.cleaned_data["to_range"] < 0
+                                or form.cleaned_data["from_range"]
+                                >= form.cleaned_data["to_range"]
+                            ):
+                                raise forms.ValidationError("Incorrect column range.")
+                        if form.cleaned_data["type"] == 'Integer':
+                            if form.cleaned_data["from_range"] >= form.cleaned_data["to_range"]:
+                                raise forms.ValidationError("Incorrect column range.")
                     count += 1
                     orders.append(form.cleaned_data["order"])
             except AttributeError:

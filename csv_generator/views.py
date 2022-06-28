@@ -21,7 +21,7 @@ from django.views.generic.edit import FormMixin
 from .forms import ColumnInlineFormSet, DataSetForm, SchemaForm, SchemaUpdateForm
 from .models import Column, DataSet, Schema
 from .tasks import generate_fake_csv
-from decouple import config
+
 
 SchemaInlineFormSet = inlineformset_factory(
     Schema,
