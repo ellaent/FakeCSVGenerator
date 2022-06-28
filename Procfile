@@ -1,2 +1,2 @@
 web: gunicorn FakeCSV.wsgi
-celery: celery worker -A FakeCSV -l info -c 4
+worker: celery -A FakeCSV worker -l info
