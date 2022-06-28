@@ -1,0 +1,11 @@
+a.nav-link, a.navbar-brand{
+    color: #212529;
+}
+
+a.nav-link:hover, a.navbar-brand:hover {
+    color: #444444;
+}
+
+#delete {
+    color: Red;
+}

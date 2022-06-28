@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="container">
+    <div>
+        <div class="mt-3 align-items-center">
+            <form method="POST" class="mt-3 align-items-center justify-content-center" >
+                {% csrf_token %}
+                <h5 class="align-items-center text-center p-3 pt-50">Are you sure you want to delete?</h5>
+                <div class="card-group p-3 pt-50 align-items-center bg-transparent justify-content-center">
+                <button class="btn btn-outline-success my-2 my-sm-0 mx-2" type="submit">Confirm</a></button>
+                <a href="{% url 'schema_detail' schema.schema_id %}" class="btn btn-outline-success my-2 my-sm-0 mx-2" type="submit">Back</a></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

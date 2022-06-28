@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <form id="schema-form" method="post" class="form-group">
+    <div class="d-flex mt-3 mb-3 align-items-center">
+      <span class="mr-auto h1">Edit schema: {{ schema.name }}</span>
+      <button class="btn btn-success btn-lg ml-auto" type="submit">Submit</button>
+    </div>
+      {% csrf_token %}
+      {% load widget_tweaks %}
+      {{ form.non_field_errors }}
+
+      {% for hidden_field in form.hidden_fields %}
+        {{ hidden_field.errors }}
+        {{ hidden_field }}
+      {% endfor %}
+      {% for field in form.visible_fields %}
+        <label class="form-label">{{ field.label }}</label>
+            {{ field.errors }}
+            {% render_field field class="form-control w-50"%}
+            {{ field.help_text }}
+      {% endfor %}
+      <div class="justify-content-center align-items-center text-center">
+
+      <div class="d-flex mt-3 mb-3 align-items-center">
+        <span class="mr-auto h1">Schema Columns</span>
+      </div>
+      <div>
+      {{inlines.management_form}}
+      <div id="columns">
+          {% if inlines.non_form_errors %}
+          <div class="alert alert-danger">{{ inlines.non_form_errors }}</div>
+          {% endif %}
+      {% for form in inlines %}
+
+
+          <div class="form-row column-form">
+          {% for field in form.visible_fields %}
+            <div class="col-md-2 mb-2">
+                <label class="form-label">{{ field.label }}</label>
+
+                    {% render_field field class="form-control w-90"%}
+                    {{ field.help_text }}
+            </div>
+
+          {% endfor %}
+          {{ form.non_field_errors }}
+
+          {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+          {% endfor %}
+          </div>
+      {% endfor %}
+      <button id="add-form" class="btn btn-primary btn-lg ml-auto" type="button">Add Column</button>
+      </div>
+      </div>
+      </div>
+  </form>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script>
+        let columnForm = document.querySelectorAll(".column-form")
+        let container = document.querySelector("#columns")
+        let addButton = document.querySelector("#add-form")
+        let totalForms = document.querySelector("#id_column_set-TOTAL_FORMS")
+
+        let formNum = columnForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e){
+            e.preventDefault()
+
+            let newForm = columnForm[0].cloneNode(true)
+            let formRegex = RegExp(`column_set-(\\d){1}-`,'g')
+
+            formNum++
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `column_set-${formNum}-`)
+            container.insertBefore(newForm, addButton)
+            document.getElementById(`id_column_set-${formNum}-from_range`).style.display = "none";
+            document.getElementById(`id_column_set-${formNum}-from_range`).previousElementSibling.style.display = "none";
+            document.getElementById(`id_column_set-${formNum}-to_range`).style.display = "none";
+            document.getElementById(`id_column_set-${formNum}-to_range`).previousElementSibling.style.display = "none";
+            totalForms.setAttribute('value', `${formNum+1}`)
+
+
+        }
+        $( document ).ready(function() {
+            $("input[id*='from_range']").each(function(){
+                var id = $(this).attr('id');
+                var select = id.replace('from_range', 'type');
+                if ($("#" + select).val() == "Integer" || $("#" + select).val() == "Text") {
+                    $(this).css({"display": "block"});
+                    $(this).prev().css({"display": "block"});
+                    $(this).css({"display": "block"});
+                    $(this).prev().css({"display": "block"});
+                } else {
+                    $(this).css({"display": "none"});
+                    $(this).prev().css({"display": "none"});
+                    $(this).css({"display": "none"});
+                    $(this).prev().css({"display": "none"});
+                    $(this).val(null);
+                }
+            });
+
+            $("input[id*='to_range']").each(function(){
+                var id = $(this).attr('id');
+                var select = id.replace('to_range', 'type');
+                if ($("#" + select).val() == "Integer" || $("#" + select).val() == "Text") {
+                    $(this).css({"display": "block"});
+                    $(this).prev().css({"display": "block"});
+                    $(this).css({"display": "block"});
+                    $(this).prev().css({"display": "block"});
+                } else {
+                    $(this).css({"display": "none"});
+                    $(this).prev().css({"display": "none"});
+                    $(this).css({"display": "none"});
+                    $(this).prev().css({"display": "none"});
+                    $(this).val(null);
+                }
+            });
+
+            $("select").change( function(){
+                var id = $(this).attr('id').replace(/[^0-9\.]+/g, "");
+                var from = "id_column_set-" + id + "-from_range";
+                var to = "id_column_set-" + id + "-to_range";
+                if ($(this).val() == "Integer" || $(this).val() == "Text") {
+                    document.getElementById(from).style.display = "block";
+                    document.getElementById(to).style.display = "block";
+                    $("#" + from).prev().css({"display": "block"});
+                    $("#" + to).prev().css({"display": "block"});
+                } else {
+                    document.getElementById(from).style.display = "none";
+                    document.getElementById(to).style.display = "none";
+                    $("#" + from).prev().css({"display": "none"});
+                    $("#" + to).prev().css({"display": "none"});
+                    $("#" + from).val(null);
+                    $("#" + to).val(null);
+                }
+            });
+        });
+    </script>
+</div>
+{% endblock %}
