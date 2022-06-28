@@ -1,7 +1,9 @@
 import os
 
+import boto3
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.storage import default_storage
 from django.forms import inlineformset_factory
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -19,6 +21,7 @@ from django.views.generic.edit import FormMixin
 from .forms import ColumnInlineFormSet, DataSetForm, SchemaForm, SchemaUpdateForm
 from .models import Column, DataSet, Schema
 from .tasks import generate_fake_csv
+from decouple import config
 
 SchemaInlineFormSet = inlineformset_factory(
     Schema,
@@ -243,13 +246,11 @@ class FileDownloadView(View):
         self.file_name = (
             "schema_" + str(schema_id) + "dataset_" + str(dataset_id) + ".csv"
         )
-        file_path = os.path.join(self.folder_path, self.file_name)
-        if os.path.exists(file_path):
-            with open(file_path, "rb") as fh:
-                response = HttpResponse(fh.read(), content_type=self.content_type_value)
-                response[
-                    "Content-Disposition"
-                ] = "inline; filename=" + os.path.basename(file_path)
-            return response
-        else:
-            raise Http404
+
+        filepath = self.file_name
+        with default_storage.open(filepath, "rb") as fh:
+            response = HttpResponse(fh.read(), content_type=self.content_type_value)
+            response[
+                "Content-Disposition"
+            ] = "inline; filename=" + filepath
+        return response
