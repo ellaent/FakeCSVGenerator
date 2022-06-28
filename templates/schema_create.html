@@ -19,7 +19,7 @@
         <label class="form-label">{{ field.label }}</label>
             {{ field.errors }}
             {% render_field field class="form-control w-50"%}
-            {{ field.help_text }}
+            {{ field.help_text}}
       {% endfor %}
       <div class="justify-content-center align-items-center text-center">
 
@@ -90,7 +90,6 @@
                     $(this).prev().css({"display": "none"});
                     $(this).css({"display": "none"});
                     $(this).prev().css({"display": "none"});
-                    $(this).val(null);
                 }
             });
 
@@ -107,7 +106,6 @@
                     $(this).prev().css({"display": "none"});
                     $(this).css({"display": "none"});
                     $(this).prev().css({"display": "none"});
-                    $(this).val(null);
                 }
             });
 
