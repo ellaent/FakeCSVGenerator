@@ -4,6 +4,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
 from django.conf import settings
+from django.core.files.storage import default_storage
 from faker import Faker
 
 from FakeCSV.celery import app
@@ -83,8 +84,19 @@ def generate_fake_csv(self, dataset_id):
             raw_row.append(data)
         all_rows.append(raw_row)
 
-    with open(
-        f"{settings.MEDIA_ROOT}schema_{schema.schema_id}dataset_{dataset_id}.csv", "w"
+    # with open(
+    #     f"{settings.MEDIA_ROOT}schema_{schema.schema_id}dataset_{dataset_id}.csv", "w"
+    # ) as csvfile:
+    #     writer = csv.writer(
+    #         csvfile, delimiter=delimeter, quotechar='"', quoting=csv.QUOTE_ALL
+    #     )
+    #     writer.writerow(header)
+    #     writer.writerows(all_rows)
+    #
+    #     dataset.status = "Ready"
+    #     dataset.save()
+    with default_storage.open(
+        f"schema_{schema.schema_id}dataset_{dataset_id}.csv", "w"
     ) as csvfile:
         writer = csv.writer(
             csvfile, delimiter=delimeter, quotechar='"', quoting=csv.QUOTE_ALL
@@ -92,6 +104,6 @@ def generate_fake_csv(self, dataset_id):
         writer.writerow(header)
         writer.writerows(all_rows)
 
-        dataset.status = "Ready"
-        dataset.save()
+    dataset.status = "Ready"
+    dataset.save()
     progress_recorder.set_progress(row_number + 1, row_number + 1)
