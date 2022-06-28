@@ -160,6 +160,7 @@ STATICFILES_DIRS = (
 MEDIA_ROOT = "media/"
 MEDIA_URL = "/media/"
 
+DEFAULT_FILE_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 FILE_STORAGE_PATH = "media/"
 
 # BROKER_URL = "redis://localhost:6379/0"
