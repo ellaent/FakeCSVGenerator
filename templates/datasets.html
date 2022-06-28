@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="container mt-5">
+  <div class="d-flex mt-3 mb-3">
+    <span class="mr-auto h1">Data sets</span>
+      <form id="dataset-form" method="post" class="form-inline row ">
+          {% csrf_token %}
+          {% load widget_tweaks %}
+          {{ form.non_field_errors }}
+
+          {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+          {% endfor %}
+          {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {% render_field field class="form-control w-25"%}
+                {{ field.help_text }}
+          {% endfor %}
+          <button class="btn btn-success btn-lg ml-2" type="submit">Generate</button>
+      </form>
+  </div>
+    {% if datasets %}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Created</th>
+        <th scope="col">Status</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for set in datasets %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ set.created }}</td>
+        <td>{% if set.status == 'Ready' %}<span class="badge badge-success"> {% else %} <span class="badge badge-secondary"> {% endif %}{{ set.status }} </span>
+        <div id="celery-result"></div>
+        <div class='progress-wrapper' style="display: none;">
+          <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+        </div>
+        <div id="progress-bar-message" style="display: none;"></div>
+        </td>
+        <td>
+            {% if set.status == 'Ready' %}
+            <a href="{% url 'dataset_download' set.schema.schema_id set.dataset_id %}"><button type="button" class="btn btn-link" style="padding:0;">Download</button></a>
+            {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    {% else %}
+    <span class="mr-auto h3">No data sets here yet</span>
+    {% endif %}
+    </tbody>
+  </table>
+    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+    {% if task_id %}
+    <script language="javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+      var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
+      CeleryProgressBar.initProgressBar(progressUrl, {
+        onSuccess: Ready,
+      })
+    });
+
+    function Ready(resultElement, result) {
+      window.location.reload(1);
+    }
+
+
+  </script>
+  {% endif %}
+</div>
+{% endblock %}
